@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coming Soon</title>
+  <style>
+    @font-face {
+      font-family: 'CalligraphyFont';
+      src: url('fonts/CalligraphyFont-Regular.ttf') format('truetype');
+    }
+
+    body {
+      overflow: hidden;
+      background-image: url('wall.jpeg');
+      background-size: cover;
+      background-position: center;
+      font-family: "CalligraphyFont", sans-serif;
+      text-align: center;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      position: relative;
+      margin-top: 10vh;
+      margin-right: 10vw;
+    }
+
+    h1 {
+      font-size: 4vw;
+      font-weight: bold;
+      color: #333;
+    }
+
+    h2 {
+      font-size: 3vw;
+      font-weight: bold;
+      color: #333;
+    }
+
+    p {
+      font-size: 2.5vw;
+      color: #666;
+      margin-bottom: 3vh;
+    }
+
+    .signature {
+      font-size: 2.5vw;
+      color: #666;
+      margin-top: 5vh;
+    }
+
+    .gif {
+      margin-top: 2vh;
+    }
+
+    .icon {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      background-size: cover;
+      animation-duration: 10s;
+      animation-timing-function: linear;
+      animation-iteration-count: infinite;
+    }
+
+    .flower {
+      background-image: url('flower.png');
+    }
+
+    .gift {
+      background-image: url('gift-icon.png');
+    }
+
+    /* Responsive styles */
+    /* ... (code omitted for brevity) ... */
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Coming Soon</h1>
+    <p>We're working on something beautiful.</p>
+   <h3> <p class="signature">Giftbox by Ulkar Aghayeva</p></h3>
+    <img class="gif" src="cat.gif" alt="GIF">
+    <div id="icon-container"></div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const iconContainer = document.getElementById("icon-container");
+      const numIcons = 50;
+
+      for (let i = 0; i < numIcons; i++) {
+        const icon = createIconElement();
+        iconContainer.appendChild(icon);
+      }
+    });
+
+    function createIconElement() {
+      const iconTypes = ["flower", "gift"];
+      const icon = document.createElement("div");
+      const randomType = iconTypes[Math.floor(Math.random() * iconTypes.length)];
+      icon.classList.add("icon", randomType);
+      icon.style.left = `${Math.random() * 100}vw`;
+      icon.style.top = `${Math.random() * 100}vh`;
+      icon.style.animationDelay = `${Math.random() * 10}s`;
+
+      if (randomType === "flower") {
+        icon.style.animationName = `moveFlower-${Math.random()}`;
+      } else if (randomType === "gift") {
+        icon.style.animationName = `moveGift-${Math.random()}`;
+      }
+
+      createAnimationKeyframes(randomType);
+
+      return icon;
+    }
+
+    function createAnimationKeyframes(iconType) {
+      const styleSheet = document.styleSheets[0];
+      const animationName = iconType === "flower" ? "moveFlower" : "moveGift";
+      const keyframes = `@keyframes ${animationName}-${Math.random()} {
+        0% {
+          transform: translate(${Math.random() * 100}vw, ${Math.random() * 100}vh);
+        }
+        100% {
+          transform: translate(${Math.random() * 100}vw, ${Math.random() * 100}vh);
+        }
+      }`;
+
+      styleSheet.insertRule(keyframes, styleSheet.cssRules.length);
+    }
+  </script>
+</body>
+</html>
