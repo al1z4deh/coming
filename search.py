@@ -1,21 +1,25 @@
 #!/usr/bin/env python3
-import subprocess
+import subprocess, shlex, os
 
 def main():
-    directory = input("Axtarılacaq qovluq (məs: /): ").strip() or "/"
-    term = input("Axtarış sözü (məs: passwd): ").strip()
+    directory = input("Axtarılacaq qovluq (məs: / və ya /etc): ").strip() or "/"
+    term = input("Axtarış sözü (məs: passwd;whoami): ").strip()
 
-    # QƏSDƏN zəif: shell=True istifadə olunur
-    find_command = f"find {directory} -type f -name '*{term}*'"
-    print(f"[debug] icra olunan: {find_command}")
+    # QƏSDƏN ZƏİF: term quotesuz verilir ki, ';', '&&' işləsin
+    # Directory-ni təhlükəsiz saxlamaq üçün yalnız onu quote edirik:
+    cmd = f"find {shlex.quote(directory)} -type f -name *{term}*"
 
-    try:
-        result = subprocess.run(find_command, shell=True,
-                                check=True, stdout=subprocess.PIPE,
-                                stderr=subprocess.PIPE, text=True)
-        print(result.stdout)
-    except subprocess.CalledProcessError as e:
-        print(f"xəta: {e.stderr}")
+    print(f"[debug] icra olunan: {cmd}")
+    # shell=True -> OS command injection mümkün
+    res = subprocess.run(cmd, shell=True, text=True,
+                         stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if res.stdout: print(res.stdout, end="")
+    if res.stderr: print(res.stderr, end="")
+
+    # kim kimi icra edir?
+    who = subprocess.run(["id","-un"], text=True, stdout=subprocess.PIPE).stdout.strip()
+    euid = os.geteuid()
+    print(f"[info] effective uid: {euid} ({who})")
 
 if __name__ == "__main__":
     main()
